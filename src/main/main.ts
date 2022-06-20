@@ -12,8 +12,27 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import ffmpegPath from 'ffmpeg-static';
+import { path as ffprobePath } from 'ffprobe-static';
+import ffmpeg from 'fluent-ffmpeg';
+import { inspect } from 'util';
+import { homedir } from 'os';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+
+const FOLDER = `${homedir()}\\Desktop\\tests`;
+const FILE = `${FOLDER}\\vid.dav`;
+
+ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath);
+ffmpeg.ffprobe(FILE, (_err, metadata) => {
+  console.log(inspect(metadata, false, null, true));
+});
+
+// ffmpeg(FILE)
+//   .videoCodec('libx264')
+//   .format('mp4')
+//   .save(`${FOLDER}\\aaa.mp4`);
 
 export default class AppUpdater {
   constructor() {
@@ -25,10 +44,10 @@ export default class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (event, arg) => {
+ipcMain.on('converter', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
+  event.reply('converter', msgTemplate('pong'));
 });
 
 if (process.env.NODE_ENV === 'production') {
