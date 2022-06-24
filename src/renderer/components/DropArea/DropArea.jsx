@@ -1,5 +1,20 @@
+import { useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { useCallback, useMemo } from 'react';
+
+const nameLengthValidator = (file) => {
+  if ('name' in file) {
+    const nameArray = file.name.split('.');
+    const extension = nameArray[nameArray.length - 1];
+    if (extension !== 'dav') {
+      return {
+        code: 'wrong-extension',
+        message: "Extension must be a '.dav'",
+      };
+    }
+  }
+
+  return null;
+};
 
 const baseStyle = {
   flex: 1,
@@ -23,42 +38,21 @@ const focusedStyle = {
 
 const acceptStyle = {
   borderColor: '#00e676',
-  backgroundColor: 'lightgreen',
 };
 
 const rejectStyle = {
   borderColor: '#ff1744',
-  backgroundColor: '#FF5B5B',
 };
 
-function nameLengthValidator(file) {
-  console.log(file);
-  // const nameArray = file.name.split('.');
-  // const extension = nameArray[nameArray.length-1];
-  // if (extension !== '.dav') {
-  //   return {
-  //     code: "extension-other-than-dav",
-  //     message: `Extension ${extension} is other than .dav`,
-  //   };
-  // }
-
-  return null;
-}
-
-// eslint-disable-next-line import/prefer-default-export
 export const DropArea = () => {
-  // const onDrop = useCallback((getFilesFromEvent) => {
-  //   console.log(getFilesFromEvent);
-  // }, [])
-
   const {
+    acceptedFiles,
+    fileRejections,
     getRootProps,
     getInputProps,
     isFocused,
     isDragAccept,
     isDragReject,
-    isDragActive,
-    acceptedFiles,
   } = useDropzone({
     validator: nameLengthValidator,
   });
@@ -73,24 +67,36 @@ export const DropArea = () => {
     [isFocused, isDragAccept, isDragReject]
   );
 
-  // const files = acceptedFiles.map(file => (
-  //   file.name.split(".")
-  //     console.log()[])
-  // ));
+  const acceptedFileItems = acceptedFiles.map((file) => (
+    <li key={file.path}>
+      {file.path} - {file.size} bytes
+    </li>
+  ));
+
+  const fileRejectionItems = fileRejections.map(({ file, errors }) => (
+    <li key={file.path}>
+      {file.path} - {file.size} bytes
+      <ul>
+        {errors.map((e) => (
+          <li key={e.code}>{e.message}</li>
+        ))}
+      </ul>
+    </li>
+  ));
 
   return (
-    <div className="container">
-      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-      <div {...getRootProps({ style })}>
-        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+    <section className="container">
+      <div {...getRootProps({ className: 'dropzone', style })}>
         <input {...getInputProps()} />
-        {isDragActive ? (
-          <p>Drop the files here ...</p>
-        ) : (
-          // eslint-disable-next-line react/no-unescaped-entities
-          <p>Drag 'n' drop some files here, or click to select files</p>
-        )}
+        <p>Drop all files to convert</p>
+        <em>(Only .dav file)</em>
       </div>
-    </div>
+      <aside>
+        <h4>Accepted files</h4>
+        <ul>{acceptedFileItems}</ul>
+        <h4>Rejected files</h4>
+        <ul>{fileRejectionItems}</ul>
+      </aside>
+    </section>
   );
 };
