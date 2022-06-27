@@ -1,17 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import { DropArea } from './components/DropArea/DropArea';
+import { store } from "./store";
 
 import './App.css';
 
 export default function App() {
   return (
-    <div className="app">
-      <Router>
-        <Routes>
-          {/* <Route path="/convert" component={ConvertScreen} /> */}
-          <Route path="/index.html" element={<DropArea />} />
-        </Routes>
-      </Router>
-    </div>
+    <Provider store={store}>
+      <div className="app">
+        <DropArea />
+      </div>
+    </Provider>
   );
 }
