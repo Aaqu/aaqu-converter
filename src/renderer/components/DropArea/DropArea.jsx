@@ -1,7 +1,10 @@
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { addFile, store } from '../../store';
 
-const nameLengthValidator = (file) => {
+import styles from './DropArea.module.css';
+
+const extensionValidator = (file) => {
   if ('name' in file) {
     const nameArray = file.name.split('.');
     const extension = nameArray[nameArray.length - 1];
@@ -16,87 +19,62 @@ const nameLengthValidator = (file) => {
   return null;
 };
 
-const baseStyle = {
-  flex: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: '20px',
-  borderWidth: 2,
-  borderRadius: 2,
-  borderColor: '#eeeeee',
-  borderStyle: 'dashed',
-  backgroundColor: '#fafafa',
-  color: '#bdbdbd',
-  outline: 'none',
-  transition: 'border .24s ease-in-out',
-};
-
-const focusedStyle = {
-  borderColor: '#2196f3',
-};
-
-const acceptStyle = {
-  borderColor: '#00e676',
-};
-
-const rejectStyle = {
-  borderColor: '#ff1744',
-};
-
 export const DropArea = () => {
+  const onDrop = useCallback((acceptedFiles) => {
+    if (acceptedFiles.length > 0) {
+      acceptedFiles.forEach((file) => {
+        store.dispatch(
+          addFile({
+            path: file.path,
+            name: file.name,
+            size: file.size,
+          })
+        );
+      });
+    }
+  }, []);
+
   const {
-    acceptedFiles,
     fileRejections,
     getRootProps,
     getInputProps,
     isFocused,
     isDragAccept,
-    isDragReject,
   } = useDropzone({
-    validator: nameLengthValidator,
+    validator: extensionValidator,
+    onDrop,
   });
 
-  const style = useMemo(
+  const border = useMemo(
     () => ({
-      ...baseStyle,
-      ...(isFocused ? focusedStyle : {}),
-      ...(isDragAccept ? acceptStyle : {}),
-      ...(isDragReject ? rejectStyle : {}),
+      ...(isFocused ? { borderColor: '#2196f3' } : {}),
+      ...(isDragAccept ? { borderColor: '#2196f3' } : {}),
     }),
-    [isFocused, isDragAccept, isDragReject]
+    [isFocused, isDragAccept]
   );
 
-  const acceptedFileItems = acceptedFiles.map((file) => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes
-    </li>
-  ));
+  // TODO: replace on popup
+  // const fileRejectionItems = fileRejections.map(({ file, errors }) => (
+  //   <li key={file.path}>
+  //     {file.path} - {file.size} bytes
+  //     <ul>
+  //       {errors.map((e) => (
+  //         <li key={e.code}>{e.message}</li>
+  //       ))}
+  //     </ul>
+  //   </li>
+  // ));
 
-  const fileRejectionItems = fileRejections.map(({ file, errors }) => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes
-      <ul>
-        {errors.map((e) => (
-          <li key={e.code}>{e.message}</li>
-        ))}
-      </ul>
-    </li>
-  ));
+  // TODO: move to other component
+  // useEffect(() => {
+  //   store.subscribe(() => console.log('second', store.getState().files));
+  // }, []);
 
   return (
-    <section className="container">
-      <div {...getRootProps({ className: 'dropzone', style })}>
-        <input {...getInputProps()} />
-        <p>Drop all files to convert</p>
-        <em>(Only .dav file)</em>
-      </div>
-      <aside>
-        <h4>Accepted files</h4>
-        <ul>{acceptedFileItems}</ul>
-        <h4>Rejected files</h4>
-        <ul>{fileRejectionItems}</ul>
-      </aside>
-    </section>
+    <div {...getRootProps({ className: styles.dropzone, style: border })}>
+      <input {...getInputProps()} />
+      <p>Drop all files to convert</p>
+      <em>(Only .dav file)</em>
+    </div>
   );
 };

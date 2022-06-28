@@ -1,6 +1,7 @@
 import { Provider } from 'react-redux';
+import { store } from './store';
 import { DropArea } from './components/DropArea/DropArea';
-import { store } from "./store";
+import { ConverterArea } from './components/ConverterArea/ConverterArea';
 
 import './App.css';
 
@@ -9,6 +10,7 @@ export default function App() {
     <Provider store={store}>
       <div className="app">
         <DropArea />
+        <ConverterArea />
       </div>
     </Provider>
   );
