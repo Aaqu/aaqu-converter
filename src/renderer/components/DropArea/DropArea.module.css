@@ -6,10 +6,11 @@
   padding: 20px;
   border-width: 2px;
   border-radius: 2px;
-  border-color: #eeeeee;
+  border-color: #797979;
   border-style: dashed;
-  background-color: #fafafa;
-  color: #bdbdbd;
+  margin: 5px;
+  background-color: #a0e9b3;
+  color: #7b7b7b;
   outline: none;
   transition: border 0.24s ease-in-out;
   cursor: pointer;

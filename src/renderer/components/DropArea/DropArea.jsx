@@ -73,8 +73,8 @@ export const DropArea = () => {
   return (
     <div {...getRootProps({ className: styles.dropzone, style: border })}>
       <input {...getInputProps()} />
-      <p>Drop all files to convert</p>
-      <em>(Only .dav file)</em>
+      <div>Drop all files to convert</div>
+      <div> (Only .dav file)</div>
     </div>
   );
 };

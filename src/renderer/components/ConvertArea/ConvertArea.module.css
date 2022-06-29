@@ -1,0 +1,6 @@
+.convertArea {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0px;
+  color: white;
+}
