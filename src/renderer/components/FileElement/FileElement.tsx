@@ -1,9 +1,18 @@
 import { FiFilm } from 'react-icons/fi';
+import { FileInfo } from '../../store';
 
 import styles from './FileElement.module.css';
 
-export const FileElement = (props: { name: string; size: number }) => {
-  const { name, size } = props;
+export const FileElement = (props: FileInfo) => {
+  const { id, name, path, size } = props;
+
+  const convert = () => {
+    console.log(path);
+  };
+
+  const remove = () => {
+    console.log(id);
+  };
 
   return (
     <div className={styles.fileElement}>
@@ -22,12 +31,14 @@ export const FileElement = (props: { name: string; size: number }) => {
         <button
           type="button"
           className={[styles.btn, styles.btnDanger].join(' ')}
+          onClick={remove}
         >
           remove
         </button>
         <button
           type="button"
           className={[styles.btn, styles.btnPrimary].join(' ')}
+          onClick={convert}
         >
           convert
         </button>
