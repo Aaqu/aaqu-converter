@@ -1,7 +1,6 @@
 .fileElement {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin: 8px;
   padding: 5px;
   border-radius: 5px;
@@ -9,17 +8,20 @@
 }
 
 .icon {
-  flex-basis: 0;
+  display: flex;
+  justify-content: center;
+  flex: 10;
 }
 
 .info {
+  flex: 70;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-
 }
 
 .buttons {
+  flex: 20;
   display: flex;
   gap: 8px;
   flex-direction: column;
@@ -41,16 +43,10 @@
   display: inline-block;
   font-weight: 400;
   text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+
   border: 1px solid transparent;
   padding: .375rem .75rem;
   font-size: 1rem;
   line-height: 1.5;
   border-radius: .25rem;
-  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }

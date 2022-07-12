@@ -1,30 +1,30 @@
 import { FiFilm } from 'react-icons/fi';
-import { FileInfo } from '../../store';
+import { useDispatch } from 'react-redux';
+import { FileInfo, removeFile } from '../../store';
 
 import styles from './FileElement.module.css';
 
 export const FileElement = (props: FileInfo) => {
   const { id, name, path, size } = props;
+  const dispatch = useDispatch();
 
   const convert = () => {
     console.log(path);
   };
 
   const remove = () => {
-    console.log(id);
+    dispatch(removeFile(id));
   };
 
   return (
     <div className={styles.fileElement}>
-      <div>
+      <div className={styles.icon}>
         <FiFilm size={38} color="white" />
       </div>
 
       <div className={styles.info}>
         <div className="name">{name}</div>
-        {/* <div className="path">{props.path}</div> */}
-        <div className="size">{Math.round((size / 1048576) * 10) / 10}MB</div>
-        {/* <div className="id">{props.id}</div> */}
+        <div className="size">{(size / 1048576).toFixed(1)}MB</div>
       </div>
 
       <div className={styles.buttons}>

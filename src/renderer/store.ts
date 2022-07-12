@@ -16,21 +16,17 @@ const initialState: ConverterState = {
   files: [],
 };
 
-interface AddFile {
-  payload: FileInfo;
-}
-
 const converterSlice = createSlice({
   name: 'converter',
   initialState,
   reducers: {
-    addFile(state, action: AddFile) {
+    addFile(state, action: { payload: FileInfo }) {
       state.files.push({
         id: uuidv4(),
         ...action.payload,
       });
     },
-    removeFile(state, action: { payload: number }) {
+    removeFile(state, action: { payload: string }) {
       state.files = state.files.filter((file) => file.id !== action.payload);
     },
   },

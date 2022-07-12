@@ -15,7 +15,6 @@ const extensionValidator = (file) => {
       };
     }
   }
-
   return null;
 };
 
@@ -47,8 +46,8 @@ export const DropArea = () => {
 
   const border = useMemo(
     () => ({
-      ...(isFocused ? { borderColor: '#2196f3' } : {}),
-      ...(isDragAccept ? { borderColor: '#2196f3' } : {}),
+      ...(isFocused ? { borderColor: 'yellow' } : {}),
+      ...(isDragAccept ? { borderColor: 'yellow' } : {}),
     }),
     [isFocused, isDragAccept]
   );
