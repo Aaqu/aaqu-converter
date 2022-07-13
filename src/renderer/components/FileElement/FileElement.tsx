@@ -1,5 +1,6 @@
 import { FiFilm } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import { FileInfo, removeFile } from '../../store';
 
 import styles from './FileElement.module.css';
@@ -15,6 +16,13 @@ export const FileElement = (props: FileInfo) => {
   const remove = () => {
     dispatch(removeFile(id));
   };
+
+  useEffect(() => {
+    window.electron.ipcRenderer.sendMessage('converter', {
+      type: 'fileInfo',
+      path,
+    });
+  }, [path]);
 
   return (
     <div className={styles.fileElement}>

@@ -21,13 +21,9 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 const FOLDER = `${homedir()}\\Desktop\\tests`;
-const FILE = `${FOLDER}\\vid.dav`;
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
-ffmpeg.ffprobe(FILE, (_err, metadata) => {
-  console.log(inspect(metadata, false, null, true));
-});
 
 // ffmpeg(FILE)
 //   .videoCodec('libx264')
@@ -45,9 +41,12 @@ export default class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('converter', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('converter', msgTemplate('pong'));
+  ffmpeg.ffprobe(arg.path, (_err, metadata) => {
+    event.reply('converter', {
+      codec: metadata.streams[0].codec_name,
+      codecLong: metadata.streams[0].codec_long_name,
+    });
+  });
 });
 
 if (process.env.NODE_ENV === 'production') {
