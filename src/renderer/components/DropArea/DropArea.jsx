@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { toast } from 'react-toastify';
 import { addFile, store } from '../../store';
 
 import styles from './DropArea.module.css';
@@ -52,22 +53,13 @@ export const DropArea = () => {
     [isFocused, isDragAccept]
   );
 
-  // TODO: replace on popup
-  // const fileRejectionItems = fileRejections.map(({ file, errors }) => (
-  //   <li key={file.path}>
-  //     {file.path} - {file.size} bytes
-  //     <ul>
-  //       {errors.map((e) => (
-  //         <li key={e.code}>{e.message}</li>
-  //       ))}
-  //     </ul>
-  //   </li>
-  // ));
-
-  // TODO: move to other component
-  // useEffect(() => {
-  //   store.subscribe(() => console.log('second', store.getState().files));
-  // }, []);
+  // TODO: store move to other component
+  useEffect(() => {
+    //store.subscribe(() => console.log('second', store.getState().files));
+    fileRejections.map(({ file }) => {
+      toast.error(`File ${file.name} have wrong extension `);
+    });
+  }, [fileRejections]);
 
   return (
     <div {...getRootProps({ className: styles.dropzone, style: border })}>
