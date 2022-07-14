@@ -1,6 +1,7 @@
 import { FiFilm } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { FileInfo, removeFile } from '../../store';
 
 import styles from './FileElement.module.css';
@@ -8,9 +9,14 @@ import styles from './FileElement.module.css';
 export const FileElement = (props: FileInfo) => {
   const { id, name, path, size } = props;
   const dispatch = useDispatch();
+  const [btnConvert, setBtnConvert] = useState(true);
 
   const convert = () => {
-    console.log(path);
+    window.electron.ipcRenderer.sendMessage('converter', {
+      type: 'fileInfo',
+      id,
+      path,
+    });
   };
 
   const remove = () => {
@@ -18,11 +24,26 @@ export const FileElement = (props: FileInfo) => {
   };
 
   useEffect(() => {
-    window.electron.ipcRenderer.sendMessage('converter', {
-      type: 'fileInfo',
-      path,
+    window.electron.ipcRenderer.on(`converter`, (arg) => {
+      if (arg.id !== id) {
+        return null;
+      }
+
+      if (arg.codec !== 'hevc') {
+        toast.error(`File ${name} have wrong codec`, {
+          theme: 'colored',
+        });
+        setBtnConvert(false);
+        return null;
+      }
+
+      console.log('start-convert');
+      console.log(arg);
+
+      // TODO: replace to convert function
+      return null;
     });
-  }, [path]);
+  }, [id, name]);
 
   return (
     <div className={styles.fileElement}>
@@ -43,13 +64,15 @@ export const FileElement = (props: FileInfo) => {
         >
           remove
         </button>
-        <button
-          type="button"
-          className={[styles.btn, styles.btnPrimary].join(' ')}
-          onClick={convert}
-        >
-          convert
-        </button>
+        {btnConvert ? (
+          <button
+            type="button"
+            className={[styles.btn, styles.btnPrimary].join(' ')}
+            onClick={convert}
+          >
+            convert
+          </button>
+        ) : null}
       </div>
     </div>
   );

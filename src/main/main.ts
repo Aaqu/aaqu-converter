@@ -41,12 +41,18 @@ export default class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('converter', async (event, arg) => {
-  ffmpeg.ffprobe(arg.path, (_err, metadata) => {
-    event.reply('converter', {
-      codec: metadata.streams[0].codec_name,
-      codecLong: metadata.streams[0].codec_long_name,
-    });
-  });
+  // eslint-disable-next-line default-case
+  switch (arg.type) {
+    case 'fileInfo':
+      ffmpeg.ffprobe(arg.path, (_err, metadata) => {
+        event.reply(`converter`, {
+          id: arg.id,
+          codec: metadata.streams[0].codec_name,
+          codecLong: metadata.streams[0].codec_long_name,
+        });
+      });
+      break;
+  }
 });
 
 if (process.env.NODE_ENV === 'production') {

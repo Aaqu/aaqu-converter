@@ -53,11 +53,11 @@ export const DropArea = () => {
     [isFocused, isDragAccept]
   );
 
-  // TODO: store move to other component
   useEffect(() => {
-    //store.subscribe(() => console.log('second', store.getState().files));
     fileRejections.map(({ file }) => {
-      toast.error(`File ${file.name} have wrong extension `);
+      return toast.error(`File ${file.name} have wrong extension`, {
+        theme: 'colored',
+      });
     });
   }, [fileRejections]);
 
